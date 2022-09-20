@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReserveDAO">
+
+ 	<resultMap type="reserve" id="reserveResult">
+		<result property="id" column="ID" />
+		<result property="date" column="REGDATE" />
+		<result property="seat_num" column="SEAT_NUM" />
+	</resultMap> 
+
+	<insert id="insertReserve" parameterType="reserve">
+		INSERT INTO reserve (seq2, id, seat_num)
+		VALUES(#{seq}, #{id}, #{seat_num})
+	</insert>
+
+	<update id="updateReserve">
+		UPDATE reserve SET date = #{date},
+		seat_num=#{seat_num} WHERE seq=#{seq}
+	</update>
+
+	<delete id="deleteReserve">
+		DELETE FROM reserve WHERE seq=#{seq}
+	</delete>
+
+	<select id="getReserve" resultType="reserve">
+		SELECT * FROM reserve WHERE id = #{id}
+	</select>
+
+	<select id="getReserveList" parameterType="reserve"
+		resultMap="reserveResult">
+		SELECT * FROM reserve
+	</select>
+
+</mapper> 

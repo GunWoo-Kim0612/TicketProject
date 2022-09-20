@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<context:component-scan
+		base-package="com.gunwoo.myapp"></context:component-scan>
+
+
+	<!-- aop -->
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
+
+	<!-- database.properties접근 -->
+	<context:property-placeholder
+		location="classpath:config/database.properties, classpath:config/email.properties" />
+	<!-- email.properties접근 -->
+
+	<!-- jdbc -->
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}"></property>
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.userpassword}"></property>
+	</bean>
+
+
+
+
+	<!-- sessionFactory 클래스를 사용하기위한 빈등록 -->
+	<bean id="sessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- setter주입,, setter주입시 ref로 참조 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation"
+			value="classpath:sql-map-config.xml"></property>
+	</bean>
+
+
+
+	<!-- sessionTemplaste 사용하기위한 빈등록 -->
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sessionFactory"></constructor-arg>
+	</bean>
+
+
+	<!-- Transaction START -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+
+
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+
+	<!-- 트랜잭션에 해당하는 AOP -->
+	<aop:config>
+		<aop:pointcut
+			expression="execution(* com.gunwoo.myapp.biz..*(..))" id="txPointcut" />
+		<aop:advisor advice-ref="txAdvice"
+			pointcut-ref="txPointcut" />
+	</aop:config>
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="-1"></property>
+	</bean>
+
+
+
+	 <!-- 이메일 인증 관련 빈 등록 -->
+   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+      <property name="host" value="smtp.gmail.com" />
+      <property name="port" value="587" />
+      <property name="username" value="${email.account}" />
+      <property name="password" value="${email.password}" />
+      <property name="javaMailProperties">
+         <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">true</prop>
+                <!-- gmail의 경우 보안문제 업데이트로 인해 SSLSocketFactory를 추가해야 smtp 사용 가능. -->
+                <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.debug">true</prop>
+                <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+            </props>
+      </property>
+      
+   </bean>
+</beans>

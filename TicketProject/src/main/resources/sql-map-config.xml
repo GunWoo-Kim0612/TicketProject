@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="callSettersOnNulls" value="true"/>
+	</settings>
+	<!-- 설정되어있음으로 안씀..  -->
+	<!-- <properties resource="database.properties"></properties> -->
+
+	<!-- alias설정 -->
+	<typeAliases>
+		<typeAlias type="com.gunwoo.myapp.biz.show.ShowVO" alias="show"/>  <!-- type : 해당패키지, alias : 별칭 board -->
+		<typeAlias type="com.gunwoo.myapp.biz.review.ReviewVO" alias="review"/>
+		<typeAlias type="com.gunwoo.myapp.biz.member.MemberVO" alias="member"/>
+		<typeAlias type="com.gunwoo.myapp.biz.mypick.MypickVO" alias="mypick"/>
+		<typeAlias type="com.gunwoo.myapp.biz.reserve.ReserveVO" alias="reserve"/>
+	</typeAliases>
+
+	<!-- JDBC -->
+
+	<!-- DB관련 코드가 이미 applicationContext.xml을 통해 되어있으므로 필요x -->
+	<!-- 
+	<environments default="development">
+		<environment id="development">
+		<transactionManager type="JDBC"></transactionManager>
+		<dataSource type="POOLED">
+			<property name="driver" value="${jdbc.driver}"/>
+			<property name="url" value="${jdbc.url}"/>
+			<property name="username" value="${jdbc.username}"/>
+			<property name="password" value="${jdbc.userpassword}"/>
+		</dataSource>
+		</environment>
+	</environments>
+	 -->
+
+	<!-- 이 데이터베이스에서 사용할 쿼리문을 맵핑해줘야함    쿼리문이작성된 xml파일을 맵핑 -->
+
+	<mappers>
+		<mapper resource="mappings/show-mapping.xml"/>
+		<mapper resource="mappings/review-mapping.xml"/>
+		<mapper resource="mappings/member-mapping.xml"/>
+		<mapper resource="mappings/reserve-mapping.xml"/>
+		<mapper resource="mappings/mypick-mapping.xml"/>
+	</mappers>
+</configuration>
+

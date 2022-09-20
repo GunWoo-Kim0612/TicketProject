@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+ 
+    .my_navbar {
+        text-align: center;
+    }
+
+    .my_navbar a {
+        color: white !important;
+    }
+
+    .my_navbar a p {
+        font-size: 15px;
+    }
+
+    .my_row {
+        text-align: right;
+    }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MypickDAO">
+
+	<resultMap type="mypick" id="mypickResult">
+		<id property="seq" column="SEQ" />
+		<result property="id" column="ID" />
+	</resultMap>
+
+	<insert id="insertMypick" parameterType="mypick">
+		INSERT INTO mypick (id, seq) VALUES (#{id}, #{seq})
+	</insert>
+
+
+	<delete id="deleteMypick">
+		DELETE FROM mypick WHERE seq=${seq}
+	</delete>
+
+	<select id="getMypick" resultType="mypick">
+		SELECT * FROM show WHERE
+		seq=#{seq}
+	</select>
+
+	<select id="getMypickList" parameterType="mypick"
+		resultMap="mypickResult">
+		SELECT * FROM show WHERE seq = (SELECT seq FROM mypick WHERE id = #{id});
+	</select>
+	
+</mapper> 

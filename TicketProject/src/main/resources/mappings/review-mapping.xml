@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ReviewDAO">
+
+
+<resultMap type="review" id="reviewResult">
+	<!-- vo객체이름, PK컬럼명   id태그 -->
+	<id property="seq" column="seq"/>
+	<id property="id" column="id"/>
+	<!-- setter메소드 와 일반 컬럼명  result태근-->
+	<result property="seq" column="seq"/>
+	<result property="id" column="id"/>
+	<result property="title" column="title"/>
+	<result property="contents" column="contents"/>
+	<result property="score" column="score"/>
+	<result property="st" column="st"/>
+</resultMap>
+	<insert id="insertReview" parameterType="review">
+		INSERT INTO review(id, seq, score, title, contents, regdate)
+		VALUES(#{id}, #{seq}, #{score}, #{title}, #{contents}, sysdate)
+	</insert>
+
+	<update id="updateReview">
+		UPDATE review SET title=#{title}, contents=#{contents}, score=#{score}
+		WHERE seq=#{seq}
+	</update>
+
+	<delete id="deleteReview">
+		DELETE FROM review WHERE seq=#{seq}
+	</delete>
+
+	<!-- <select id="getBoard" resultType="com.springbook.biz.BoardVO"> -->
+	<!-- alias로 수정함 -->
+	<select id="getReview" resultType="review">
+		SELECT * FROM Review WHERE seq=#{seq}
+	</select>
+
+
+	<!-- resultMap에 매칭되는 정보로 변경 -->
+	<select id="getReviewList" parameterType="review" resultMap="reviewResult">
+		SELECT * FROM review WHERE seq=#{seq}
+	</select>
+	
+	<select id="getUserReviewList" parameterType="review" resultMap="reviewResult">
+		<!-- SELECT rownum, r.*, s.title st, s.img si from review r FULL OUTER JOIN show s  ON  s.seq = r.seq WHERE id= #{id} -->
+		SELECT * FROM review WHERE id=#{id} ORDER BY seq desc
+	</select>
+	
+	
+	
+
+</mapper> 

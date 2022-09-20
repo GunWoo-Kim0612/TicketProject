@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberDAO">
+
+
+<resultMap type="Member" id="MemberResult">
+</resultMap>
+	<insert id="insertMember" parameterType="Member">
+		INSERT INTO Member(id, pw, grade, name, email, phone)
+		VALUES(#{id}, #{pw}, #{grade}, #{name}, #{email}, #{phone})
+	</insert>
+
+	<update id="updateMember">
+		UPDATE Member SET pw=#{pw}, email=#{email}, phone=#{phone}
+		WHERE id=#{id}
+	</update>
+
+	<delete id="deleteMember">
+		DELETE FROM Member WHERE id=#{id}
+	</delete>
+
+	<!-- <select id="getBoard" resultType="com.springbook.biz.BoardVO"> -->
+	<!-- alias로 수정함 -->
+	<select id="getMember" resultType="Member">
+		SELECT * FROM Member WHERE id=#{id}
+	</select>
+	
+	<select id="findId" resultType="Member">
+		SELECT * FROM Member WHERE name=#{name} and email=#{email}
+	</select>
+	
+	<select id="findPw" resultType="Member">
+		SELECT * FROM Member WHERE name=#{name} and id=#{id} and email=#{email}
+	</select>
+	
+	<select id="login" resultType="Member">
+		SELECT * FROM Member WHERE id=#{id} and pw=#{pw}
+	</select>
+
+<!-- resultMap에 매칭되는 정보로 변경 -->
+	<select id="getMemberList" parameterType="Member" resultMap="MemberResult">
+		SELECT * FROM Member
+	</select>
+	
+	<!-- Mypage 비밀번호 조회 -->
+	<select id="chkPw" resultType="Member">
+		SELECT pw FROM member where id=#{id}
+	</select>
+	
+</mapper> 

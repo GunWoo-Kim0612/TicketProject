@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ShowDAO">
+
+
+<resultMap type="show" id="showResult">
+	<!-- vo객체이름, PK컬럼명   id태그 -->
+	<id property="seq" column="SEQ"/>
+	<!-- setter메소드 와 일반 컬럼명  result태근-->
+	<result property="title" column="TITLE"/>
+</resultMap>
+
+
+	<update id="updateShow" parameterType="show">
+		UPDATE show SET runtime = #{runtime}, price=#{price}, title=#{title}, contents=#{contents}, img = #{img}, seats = #{seats}, start_date=#{start_date}, end_date=#{end_date} 
+		WHERE seq=#{seq}
+	</update>
+
+	<insert id="insertShow" parameterType="show">
+		<!-- insert기능이 실행되기전에 seq라는 이름으로 동작하는것 사용시 파라미터형식 : #{seq} 오라클sql에서 만들어놓은 
+			시퀀스 사용 -->
+		<selectKey keyProperty="seq" resultType="int" order="BEFORE">
+			select show_seq.nextval as seq from dual
+		</selectKey>
+		INSERT INTO show (seq, runtime, price, title, contents, seats, start_date, end_date, img)
+		VALUES(#{seq}, #{runtime}, #{price}, #{title}, #{contents}, #{seats}, #{start_date}, #{end_date}, #{img})
+	</insert>
+
+
+
+	
+
+	<delete id="deleteShow">
+		DELETE FROM show WHERE seq=#{seq}
+	</delete>
+
+	<!-- <select id="getBoard" resultType="com.springbook.biz.BoardVO"> -->
+	<!-- alias로 수정함 -->
+	<select id="getShow" resultType="show">
+		SELECT *FROM show WHERE seq = #{seq}
+	</select>
+
+
+<!-- resultMap에 매칭되는 정보로 변경 -->
+	<select id="getShowList" parameterType="show" resultMap="showResult">
+    	select *  from show
+	</select>
+	<!-- 가장 가까운 공연 5개 불러와서 메인에 뿌려줘요 -->
+	
+	<!-- 마이픽 리스트 -->
+	<select id="getMypickList" parameterType="String" resultType="show">
+		SELECT * FROM show WHERE seq in (SELECT seq FROM mypick WHERE id = #{id})
+	</select>
+	
+	<!-- 리뷰 리스트 -->
+	<select id="getShowReview" resultMap="showResult">
+		SELECT img, title FROM show WHERE seq in (SELECT seq FROM review WHERE seq in ${seq})
+	</select>
+	
+</mapper> 
